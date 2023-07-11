@@ -1,59 +1,120 @@
 submodule (nc4fortran) attributes
 
-use netcdf, only : nf90_put_att, nf90_get_att
+use netcdf, only : nf90_put_att, nf90_get_att, nf90_inq_attname, nf90_inquire_attribute
 implicit none (type, external)
-
 
 contains
 
-module procedure write_attribute
-integer :: varid, ier
+module procedure nc_write_var_attr
+  integer :: varid, ier
 
-ier = nf90_inq_varid(self%file_id, dname, varid)
+  ier = nf90_inq_varid(self%file_id, dname, varid)
+  print *, "Attribute varid = ", varid
 
-if(ier == nf90_noerr) then
-select type(A)
-type is (character(*))
-   ier = nf90_put_att(self%file_id, varid, attrname, A)
-type is (real(real32))
-  ier = nf90_put_att(self%file_id, varid, attrname, A)
-type is (real(real64))
-  ier = nf90_put_att(self%file_id, varid, attrname, A)
-type is (integer(int32))
-  ier = nf90_put_att(self%file_id, varid, attrname, A)
-class default
-  ier = NF90_EBADTYPE
-end select
-endif
+  if(ier == nf90_noerr) then
+    select type(A)
+    type is (character(*))
+      ier = nf90_put_att(self%file_id, varid, attrname, A)
+    type is (real(real32))
+      ier = nf90_put_att(self%file_id, varid, attrname, A)
+    type is (real(real64))
+      ier = nf90_put_att(self%file_id, varid, attrname, A)
+    type is (integer(int32))
+      ier = nf90_put_att(self%file_id, varid, attrname, A)
+    class default
+      ier = NF90_EBADTYPE
+    end select
+  endif
+    
+  if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to write ' // attrname
+end procedure nc_write_var_attr    
+  
+module procedure nc_write_dset_attr
+  integer :: ier, xtype_, len_, attnum_
+  character(len=80) :: attname_
+  
+  if (attrnum>0) then
+    attnum_= attrnum
+    ier = nf90_inq_attname(self%file_id, NF90_GLOBAL, attnum_, attname_)
+    attname_ = trim(attname_)
+    print *, "Global attribute info = ", attname_, attnum_
+  else
+    ier = nf90_inquire_attribute(self%file_id, NF90_GLOBAL, attrname, xtype_, len_, attnum_)
+    print *, "Global attribute info = ", attrname, xtype_, len_, attnum_
+  endif
 
-if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to write' // attrname
+  if(ier == nf90_noerr) then
+    select type(A)
+    type is (character(*))
+      ier = nf90_put_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (real(real32))
+      ier = nf90_put_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (real(real64))
+      ier = nf90_put_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (integer(int32))
+      ier = nf90_put_att(self%file_id, NF90_GLOBAL, attrname, A)
+    class default
+      ier = NF90_EBADTYPE
+    end select
+  endif
 
-end procedure write_attribute
+  if (check_error(ier, dset_name)) error stop 'nc4fortran:attributes: failed to write ' // attrname
+end procedure nc_write_dset_attr    
 
+module procedure nc_read_var_attr
+  integer :: varid, ier
 
-module procedure read_attribute
-integer :: varid, ier
+  ier = nf90_inq_varid(self%file_id, dname, varid)
+  print *, "Attribute varid = ", varid
 
-ier = nf90_inq_varid(self%file_id, dname, varid)
+  if(ier == nf90_noerr) then
+    select type (A)
+    type is (character(*))
+      ier = nf90_get_att(self%file_id, varid, attrname, A)
+    type is (real(real32))
+      ier = nf90_get_att(self%file_id, varid, attrname, A)
+    type is (real(real64))
+      ier = nf90_get_att(self%file_id, varid, attrname, A)
+    type is (integer(int32))
+      ier = nf90_get_att(self%file_id, varid, attrname, A)
+    class default
+      ier = NF90_EBADTYPE
+    end select
+  endif
 
-if(ier == nf90_noerr) then
-select type (A)
-type is (character(*))
-  ier = nf90_get_att(self%file_id, varid, attrname, A)
-type is (real(real32))
-  ier = nf90_get_att(self%file_id, varid, attrname, A)
-type is (real(real64))
-  ier = nf90_get_att(self%file_id, varid, attrname, A)
-type is (integer(int32))
-  ier = nf90_get_att(self%file_id, varid, attrname, A)
-class default
-  ier = NF90_EBADTYPE
-end select
-endif
+  if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to read ' // attrname
+end procedure nc_read_var_attr
 
-if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to read' // attrname
+module procedure nc_read_dset_attr
+  integer :: ier, xtype_, len_, attnum_
+  character(len=80) :: attname_
 
-end procedure read_attribute
+  if (attrnum>0) then
+    attnum_ = attrnum
+    ier = nf90_inq_attname(self%file_id, NF90_GLOBAL, attnum_, attname_)
+    attname_ = trim(attname_)
+    print *, "Global attribute info = ", attname_, attnum_
+  else
+    ier = nf90_inquire_attribute(self%file_id, NF90_GLOBAL, attrname, xtype_, len_, attnum_)
+    print *, "Global attribute info = ", attrname, xtype_, len_, attnum_
+  endif
 
+  if(ier == nf90_noerr) then
+    select type(A)
+    type is (character(*))
+      ier = nf90_get_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (real(real32))
+      ier = nf90_get_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (real(real64))
+      ier = nf90_get_att(self%file_id, NF90_GLOBAL, attrname, A)
+    type is (integer(int32))
+      ier = nf90_get_att(self%file_id, NF90_GLOBAL, attrname, A)
+    class default
+      ier = NF90_EBADTYPE
+    end select
+  endif
+
+  if (check_error(ier, dset_name)) error stop 'nc4fortran:attributes: failed to read ' // attrname
+end procedure nc_read_dset_attr    
 
 end submodule attributes

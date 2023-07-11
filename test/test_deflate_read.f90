@@ -6,7 +6,7 @@ use nc4fortran, only : netcdf_file
 
 implicit none (type, external)
 
-character(*), parameter :: fn1='deflate1.nc'
+character(*), parameter :: fn1='test/data/deflate1.nc'
 integer, parameter :: N(2) = [50, 1000]
 
 

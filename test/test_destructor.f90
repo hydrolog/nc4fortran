@@ -6,7 +6,7 @@ use, intrinsic :: iso_fortran_env, only : stderr=>error_unit
 use nc4fortran, only: netcdf_file
 implicit none (type, external)
 
-character(*), parameter :: fn = "test_destruct.h5"
+character(*), parameter :: fn = "test/data/test_destruct.h5"
 
 call test_destructor_write(fn)
 print *, 'OK: destructor write'

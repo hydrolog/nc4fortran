@@ -1,5 +1,5 @@
 submodule (nc4fortran) utils
-
+use, intrinsic :: iso_c_binding, only :  c_ptr, c_loc, c_char
 use netcdf, only : NF90_STRERROR
 
 implicit none (type, external)
@@ -129,6 +129,29 @@ check_error = code /= NF90_NOERR
 if(check_error) write(stderr,'(/,A)') "ERROR:nc4fortran:" // NF90_STRERROR(code)
 
 end procedure check_error
+
+function f_c_string(string,asis)
+  use, intrinsic :: iso_c_binding, only: c_char,c_null_char
+  implicit none
+  character(len=*), intent(in) :: string
+  logical, intent(in), optional :: asis
+
+  character(kind=c_char,len=:), allocatable :: f_c_string
+  logical :: asis_
+
+  asis_ = .true.
+  if (present(asis)) asis_ = asis
+
+  block
+    intrinsic trim
+    if (asis_) then
+      f_c_string = string//c_null_char
+    else
+      f_c_string = trim(string)//c_null_char
+    end if
+  end block
+
+end function
 
 
 end submodule utils

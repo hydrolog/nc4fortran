@@ -5,7 +5,7 @@ use nc4fortran, only : netcdf_file
 
 implicit none (type, external)
 
-character(*), parameter :: filename = 'test_attr.h5'
+character(*), parameter :: filename = 'test/data/test_attr.h5'
 
 call test_write_attributes(filename)
 print *,'PASSED: write attributes'

@@ -7,7 +7,7 @@ use nc4fortran, only : netcdf_file
 
 implicit none (type, external)
 
-character(*), parameter :: fn='test_string.nc'
+character(*), parameter :: fn='test/data/test_string.nc'
 
 call test_write(fn)
 print *, "OK: HDF5 string write"

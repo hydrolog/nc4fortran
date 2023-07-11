@@ -5,7 +5,7 @@ use netcdf, only : nf90_create, nf90_def_var, nf90_put_var, nf90_close, NF90_CLO
 implicit none (type, external)
 
 integer :: i, file_id, varid
-character(*), parameter :: filename='test_minimal.nc'
+character(*), parameter :: filename='test/data/test_minimal.nc'
 
 i = nf90_create(filename, ior(NF90_CLOBBER, NF90_NETCDF4), file_id)
 if (i/=0) error stop 'minimal: could not create file'

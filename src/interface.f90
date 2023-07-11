@@ -1,6 +1,5 @@
 module nc4fortran
 !! NetCDF4 object-oriented polymorphic interface
-use, intrinsic :: iso_c_binding, only : c_ptr, c_loc
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 
 use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_NAME, &
@@ -8,7 +7,8 @@ use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF
   NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, NF90_EDIMSIZE, &
   nf90_open, nf90_close, nf90_estride, nf90_inq_varid, nf90_inq_dimid, nf90_inquire_dimension, &
   nf90_def_dim, nf90_def_var, nf90_get_var, nf90_put_var, &
-  nf90_inq_libvers, nf90_sync, nf90_inquire_variable
+  nf90_inq_libvers, nf90_sync, nf90_inquire_variable, nf90_inquire_attribute, &
+  NF90_GLOBAL
 
 implicit none (type, external)
 private
@@ -34,8 +34,6 @@ procedure, public :: create => nc_create
 procedure, public :: shape => get_shape
 procedure, public :: ndim => get_ndim
 procedure, public :: ndims => get_ndim
-procedure, public :: write_attribute
-procedure, public :: read_attribute
 procedure, public :: flush=>nc_flush
 procedure, public :: deflate => get_deflate
 procedure, public :: exist=>nc_check_exist
@@ -53,6 +51,11 @@ generic, public :: read => nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, n
 procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc_write_4d, nc_write_5d, nc_write_6d, nc_write_7d, &
   nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
+
+generic, public :: write_attribute =>  nc_write_var_attr, nc_write_dset_attr
+generic, public :: read_attribute =>  nc_read_var_attr, nc_read_dset_attr
+
+procedure, private :: nc_write_var_attr, nc_write_dset_attr, nc_read_var_attr, nc_read_dset_attr
 
 !> flush file to disk and close file if user forgets to do so.
 final :: destructor
@@ -255,18 +258,32 @@ end subroutine
 
 end interface
 
-
 interface !< attributes.f90
-module subroutine write_attribute(self, dname, attrname, A)
+module subroutine nc_write_var_attr(self, dname, attrname, A)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(in) :: A
 end subroutine
 
-module subroutine read_attribute(self, dname, attrname, A)
+module subroutine nc_read_var_attr(self, dname, attrname, A)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
 class(*), intent(inout) ::  A
+!! inout for character
+end subroutine
+
+module subroutine nc_write_dset_attr(self, dset_name, attrname, A, attrnum)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dset_name, attrname
+class(*), intent(in) :: A
+integer, intent(in) :: attrnum
+end subroutine
+
+module subroutine nc_read_dset_attr(self, dset_name, attrname, A, attrnum)
+class(netcdf_file), intent(in) :: self
+character(*), intent(in) :: dset_name, attrname
+class(*), intent(inout) ::  A
+integer,  intent(in) :: attrnum
 !! inout for character
 end subroutine
 

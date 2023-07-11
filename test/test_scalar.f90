@@ -7,7 +7,7 @@ use netcdf, only : NF90_INT, NF90_INT64
 
 implicit none (type, external)
 
-character(*), parameter :: fn = 'test_scalar.nc'
+character(*), parameter :: fn = 'test/data/test_scalar.nc'
 
 call test_scalar_write(fn)
 print *, 'OK: scalar and vector: write and rewrite'

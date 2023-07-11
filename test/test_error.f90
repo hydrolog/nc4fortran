@@ -13,7 +13,7 @@ contains
 subroutine test_wrong_type()
 integer :: u
 type(netcdf_file) :: h
-character(*), parameter :: filename = 'bad.nc'
+character(*), parameter :: filename = 'test/data/bad.nc'
 
 call h%open(filename, action='w')
 call h%write('real32', 42.)

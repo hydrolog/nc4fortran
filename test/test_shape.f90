@@ -5,7 +5,7 @@ use, intrinsic:: iso_fortran_env, only: real64, stdout=>output_unit, stderr=>err
 
 implicit none (type, external)
 
-character(*), parameter :: fn = 'test_shape.nc'
+character(*), parameter :: fn = 'test/data/test_shape.nc'
 
 
 call test_shape_write(fn)

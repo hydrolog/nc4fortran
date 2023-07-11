@@ -7,6 +7,11 @@ version = "1.7.0"
 external-modules = ["netcdf"]
 link = ["netcdf", "netcdff", "hdf5", "hdf5_hl", "hdf5_fortran", "hdf5hl_fortran"]
 
+[fortran]
+implicit-typing = false
+implicit-external = false
+source-form = "free"
+
 [install]
 library = true
 

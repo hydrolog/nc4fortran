@@ -8,7 +8,7 @@ implicit none (type, external)
 call test_is_netcdf()
 print *, 'OK: is_netcdf'
 
-call test_exist('exist.h5')
+call test_exist('test/data/exist.h5')
 print *, 'OK: exist'
 
 call test_multifiles()
@@ -19,9 +19,9 @@ contains
 subroutine test_is_netcdf()
 integer :: i
 
-if(is_netcdf('apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existent file declared netcdf'
+if(is_netcdf('test/data/apidfjpj-8j9ejfpq984jfp89q39SHf.nc')) error stop 'test_exist: non-existent file declared netcdf'
 
-open(newunit=i, file='not_netcdf.nc', action='write', status='replace')
+open(newunit=i, file='test/data/not_netcdf.nc', action='write', status='replace')
 write(i,*) 'I am not a NetCDF4 file.'
 close(i)
 
@@ -60,10 +60,10 @@ subroutine test_multifiles()
 
 type(netcdf_file) :: f,g,h
 
-call f%open(filename='A.nc', action='w')
-call g%open(filename='B.nc', action='w')
+call f%open(filename='test/data/A.nc', action='w')
+call g%open(filename='test/data/B.nc', action='w')
 if (h%is_open) error stop 'is_open not isolated at constructor'
-call h%open(filename='C.nc', action='w')
+call h%open(filename='test/data/C.nc', action='w')
 
 call f%flush()
 

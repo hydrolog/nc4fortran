@@ -18,7 +18,7 @@ integer(int64) :: i64
 NaN32 = ieee_value(0., ieee_quiet_nan)
 NaN64 = ieee_value(0._real64, ieee_quiet_nan)
 
-call nc%open("test_fill.nc", "w")
+call nc%open("test/data/test_fill.nc", "w")
 
 call nc%create("real32", NF90_FLOAT, [1], fill_value=NaN32)
 call nc%create("real64>32", NF90_FLOAT, [1], fill_value=NaN64)
@@ -33,7 +33,7 @@ call nc%create("int64", NF90_INT64, [1], fill_value=int(-1, int64))
 
 call nc%close()
 
-call nc%open("test_fill.nc", "r")
+call nc%open("test/data/test_fill.nc", "r")
 
 call nc%read("real32", r32)
 call nc%read("real64", r64)

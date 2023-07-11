@@ -10,11 +10,13 @@ implicit none (type, external)
 
 real(real32) :: nan
 
-call test_basic_array('test_array.nc')
+character(*), parameter :: DATASET_01 = 'test/data/test_array.nc'
+
+call test_basic_array(DATASET_01)
 print *,'PASSED: array write'
-call test_read_slice('test_array.nc')
+call test_read_slice(DATASET_01)
 print *, 'PASSED: slice read'
-call test_write_slice('test_array.nc')
+call test_write_slice(DATASET_01)
 print *, 'PASSED: slice write'
 
 contains
