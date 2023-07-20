@@ -4,7 +4,7 @@ categories = "io"
 version = "1.7.0"
 
 [build]
-external-modules = ["netcdf"]
+external-modules = ["netcdf", "netcdff"]
 link = ["netcdf", "netcdff", "hdf5", "hdf5_hl", "hdf5_fortran", "hdf5hl_fortran"]
 
 [fortran]

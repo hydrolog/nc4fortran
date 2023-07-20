@@ -1,16 +1,70 @@
 module nc4fortran
 !! NetCDF4 object-oriented polymorphic interface
+# interfaces to netcdf-fortran 
+# netcdf4_f03  == abordagem de especificar somente interface explicita
+#                 e de preferencia para programas novos que usam as 
+#                 features do formato netcdf4.
+#                 Ver tambem a biblioteca python-netcdf para 
+#                 melhorar a documentacao.
+#
+#  A melhoria da documentacao da biblioteca tem o objetivo de aperfeiçoar 
+#  a biblioteca nc4fortran. Pode ser o ponto de partida para uma plataforma de desenvolvimento
+#  de algoritmos e modelos na forma de plugins para xarray. Usando accessors do xarray
+#  algoritmos paralelos em fortran e gravação transparente no backend netcdf4 do xarray.
+#  O uso das bibliotecas de base para uma api "generica" em fastapi (python) que 
+#  expanda o ecosistema tipo "pangeo" para os novos programadores F2023 usando o leverage do xarray.
+#  As bibliotecas em que usa como base:
+#   - numpy, pandas, python-netcdf, rasterio, rioxarray,   
+#
+#   +
+#   +--netcdf_nf_data
+#   +--netcdf_nf_interfaces
+#   +--netcdf4_nf_interfaces
+#   Ver netcdf_constants.f90
+#   Ver netcdf_visibility
+
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 
-use netcdf, only : nf90_create, nf90_open, NF90_WRITE, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_NAME, &
-  NF90_NOERR, NF90_EHDFERR, NF90_EBADNAME, NF90_EBADDIM, NF90_EBADTYPE, NF90_EBADGRPID, NF90_ENOTNC, NF90_ENOTVAR, &
-  NF90_ECHAR, NF90_EEDGE, NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, NF90_EDIMSIZE, &
-  nf90_open, nf90_close, nf90_estride, nf90_inq_varid, nf90_inq_dimid, nf90_inquire_dimension, &
-  nf90_def_dim, nf90_def_var, nf90_get_var, nf90_put_var, &
-  nf90_inq_libvers, nf90_sync, nf90_inquire_variable, nf90_inquire_attribute, &
+! Library version, error string
+use netcdf, only : nf90_inq_libvers, nf90_strerror
+  
+! Control routines 
+use netcdf, only : nf90_create, nf90_open, nf90_set_base_pe, nf90_inq_base_pe, &
+                  nf90_set_fill, nf90_redef, nf90_enddef,                     &
+                  nf90_create_mp, nf90_open_mp,                               &
+                  nf90_sync, nf90_abort, nf90_close, nf90_delete
+          
+! File level inquiry
+use netcdf, only : nf90_inquire, nf90_inq_path, nf90_inq_format
+
+! Dimension routines
+use netcdf, only : nf90_def_dim, nf90_inq_dimid, nf90_rename_dim, nf90_inquire_dimension
+
+! attribute routines
+use netcdf, only : nf90_copy_att, nf90_rename_att, nf90_del_att, nf90_inq_attname, &
+  nf90_inquire_attribute
+
+! overloaded functions
+use netcdf, only : nf90_put_att, nf90_get_att
+
+! Variable routines
+use netcdf, only : nf90_def_var, nf90_inq_varid, nf90_rename_var, nf90_inquire_variable 
+! overloaded functions
+use netcdf, only : nf90_put_var, nf90_get_var
+
+!use netcdf, only :  nf90_create, nf90_open, nf90_set_base_pe, nf90_inq_base_pe, &
+!  nf90_set_fill, nf90_redef, nf90_enddef,                                       &
+!  nf90_create_mp, nf90_open_mp,                                                 &
+!  nf90_syn
+
+use netcdf, only :  NF90_WRITE, NF90_CLOBBER, NF90_NETCDF4, NF90_MAX_NAME, &
+  NF90_NOERR, NF90_EHDFERR, NF90_EBADNAME, NF90_EBADDIM, NF90_EBADTYPE,    &
+  NF90_EBADGRPID, NF90_ENOTNC, NF90_ENOTVAR, NF90_ECHAR, NF90_EEDGE,       &
+  NF90_ENAMEINUSE, NF90_EBADID, NF90_EINDEFINE, NF90_NOWRITE, NF90_EDIMSIZE, &
   NF90_GLOBAL
 
 implicit none (type, external)
+
 private
 public :: netcdf_file, NF90_MAX_NAME, NF90_NOERR, check_error, is_netcdf, nc_exist, nc4version
 
@@ -52,10 +106,10 @@ procedure, private :: nc_write_scalar, nc_write_1d, nc_write_2d, nc_write_3d, nc
   nc_read_scalar, nc_read_1d, nc_read_2d, nc_read_3d, nc_read_4d, nc_read_5d, nc_read_6d, nc_read_7d, &
   def_dims
 
-generic, public :: write_attribute =>  nc_write_var_attr, nc_write_dset_attr
-generic, public :: read_attribute =>  nc_read_var_attr, nc_read_dset_attr
+generic, public :: write_attribute =>  nc_write_var_attr, nc_write_grp_attr
+generic, public :: read_attribute =>  nc_read_var_attr, nc_read_grp_attr
 
-procedure, private :: nc_write_var_attr, nc_write_dset_attr, nc_read_var_attr, nc_read_dset_attr
+procedure, private :: nc_write_var_attr, nc_write_grp_attr, nc_read_var_attr, nc_read_grp_attr
 
 !> flush file to disk and close file if user forgets to do so.
 final :: destructor
@@ -272,16 +326,16 @@ class(*), intent(inout) ::  A
 !! inout for character
 end subroutine
 
-module subroutine nc_write_dset_attr(self, dset_name, attrname, A, attrnum)
+module subroutine nc_write_grp_attr(self, grp_name, attrname, A, attrnum)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dset_name, attrname
+character(*), intent(in) :: grp_name, attrname
 class(*), intent(in) :: A
 integer, intent(in) :: attrnum
 end subroutine
 
-module subroutine nc_read_dset_attr(self, dset_name, attrname, A, attrnum)
+module subroutine nc_read_grp_attr(self, grp_name, attrname, A, attrnum)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: dset_name, attrname
+character(*), intent(in) :: grp_name, attrname
 class(*), intent(inout) ::  A
 integer,  intent(in) :: attrnum
 !! inout for character

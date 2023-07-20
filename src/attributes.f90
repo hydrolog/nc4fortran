@@ -1,6 +1,5 @@
 submodule (nc4fortran) attributes
 
-use netcdf, only : nf90_put_att, nf90_get_att, nf90_inq_attname, nf90_inquire_attribute
 implicit none (type, external)
 
 contains
@@ -29,7 +28,7 @@ module procedure nc_write_var_attr
   if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to write ' // attrname
 end procedure nc_write_var_attr    
   
-module procedure nc_write_dset_attr
+module procedure nc_write_grp_attr
   integer :: ier, xtype_, len_, attnum_
   character(len=80) :: attname_
   
@@ -40,6 +39,8 @@ module procedure nc_write_dset_attr
     print *, "Global attribute info = ", attname_, attnum_
   else
     ier = nf90_inquire_attribute(self%file_id, NF90_GLOBAL, attrname, xtype_, len_, attnum_)
+    if (attnum_==0) ier=0 
+    ! create new attribute
     print *, "Global attribute info = ", attrname, xtype_, len_, attnum_
   endif
 
@@ -58,8 +59,8 @@ module procedure nc_write_dset_attr
     end select
   endif
 
-  if (check_error(ier, dset_name)) error stop 'nc4fortran:attributes: failed to write ' // attrname
-end procedure nc_write_dset_attr    
+  if (check_error(ier, grp_name)) error stop 'nc4fortran:attributes: failed to write ' // attrname
+end procedure nc_write_grp_attr    
 
 module procedure nc_read_var_attr
   integer :: varid, ier
@@ -85,7 +86,7 @@ module procedure nc_read_var_attr
   if (check_error(ier, dname)) error stop 'nc4fortran:attributes: failed to read ' // attrname
 end procedure nc_read_var_attr
 
-module procedure nc_read_dset_attr
+module procedure nc_read_grp_attr
   integer :: ier, xtype_, len_, attnum_
   character(len=80) :: attname_
 
@@ -114,7 +115,7 @@ module procedure nc_read_dset_attr
     end select
   endif
 
-  if (check_error(ier, dset_name)) error stop 'nc4fortran:attributes: failed to read ' // attrname
-end procedure nc_read_dset_attr    
+  if (check_error(ier, grp_name)) error stop 'nc4fortran:attributes: failed to read ' // attrname
+end procedure nc_read_grp_attr    
 
 end submodule attributes

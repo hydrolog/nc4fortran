@@ -30,6 +30,8 @@ call h%write_attribute('x', 'life', 42)
 call h%write_attribute('x', 'life_float', 42._real32)
 call h%write_attribute('x', 'life_double', 42._real64)
 
+call h%write_attribute('/', 'atrib_global_01', 1000._real32, 0)
+
 call h%close()
 
 end subroutine test_write_attributes
@@ -62,6 +64,9 @@ if (attr32 /= 42._real32) error stop 'read_attribute: real32'
 
 call h%read_attribute('x', 'life_double', attr64)
 if (attr64 /= 42._real64) error stop 'read_attribute: real64'
+
+call h%read_attribute('/', 'atrib_global_01', attr32, 0)
+if (attr32 /= 1000._real32) error stop 'read_attribute: real32'
 
 call h%close()
 
