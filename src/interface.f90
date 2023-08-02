@@ -341,7 +341,6 @@ end subroutine
 
 end interface
 
-
 interface !< utils.f90
 
 module subroutine nc_open(self, filename, action, comp_lvl, debug)
