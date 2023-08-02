@@ -326,18 +326,16 @@ class(*), intent(inout) ::  A
 !! inout for character
 end subroutine
 
-module subroutine nc_write_grp_attr(self, grp_name, attrname, A, attrnum)
+module subroutine nc_write_grp_attr(self, dname, attrname, A)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: grp_name, attrname
-class(*), intent(in) :: A
-integer, intent(in) :: attrnum
+character(*), intent(in) :: grpname, attrname, grpname
+class(*), intent(in) :: A  !value of attribute to be written
 end subroutine
 
-module subroutine nc_read_grp_attr(self, grp_name, attrname, A, attrnum)
+module subroutine nc_read_grp_attr(self, grpname, attrname, A)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: grp_name, attrname
-class(*), intent(inout) ::  A
-integer,  intent(in) :: attrnum
+character(*), intent(in) :: grpname, attrname  
+class(*), intent(inout) ::  A   !value of attribute to be read
 !! inout for character
 end subroutine
 
