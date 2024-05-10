@@ -5,7 +5,6 @@
 {
   "name": "default",
   "binaryDir": "${sourceDir}/build",
-  "installDir": "${sourceDir}/build/local",
   "cacheVariables": {
     "CMAKE_COMPILE_WARNING_AS_ERROR": true
   }

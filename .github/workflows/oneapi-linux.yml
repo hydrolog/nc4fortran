@@ -6,6 +6,9 @@ env:
 # https://github.com/oneapi-src/oneapi-ci/blob/master/.github/workflows/build_all.yml
   CTEST_NO_TESTS_ACTION: error
   CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -64,7 +67,6 @@ jobs:
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH:PATH=${{ github.workspace }}/build/local
 
 # BUILD_SHARED_LIBS=false since as with any C++ / Fortran program with Intel compiler,
 # need to have GCC environment carefully set

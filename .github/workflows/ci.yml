@@ -3,7 +3,9 @@ name: ci
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -60,11 +62,11 @@ jobs:
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - name: build examples
       run: cmake --build example/build
+
     - name: Test examples
       run: ctest --test-dir example/build -V
 
@@ -93,17 +95,14 @@ jobs:
     - run: cmake --install build
 
     - name: configure examples
-      run: >-
-        cmake
-        -S example
-        -B example/build
-        -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build/local
-
+      run: cmake -S example -B example/build
 
     - name: build examples
       run: cmake --build example/build
+
     - name: Test examples
       run: ctest --test-dir example/build -V
+
 
   linux-coverage:
     if: github.event_name == 'release'
@@ -113,7 +112,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -126,7 +125,7 @@ jobs:
       run: pip install gcovr
 
     - run: cmake --preset coverage
-    - run: cmake --build --preset coverage --parallel
+    - run: cmake --build --preset coverage
 
     - name: Code coverage
       run: cmake --build --preset run-coverage

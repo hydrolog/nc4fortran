@@ -4,14 +4,18 @@ option(${PROJECT_NAME}_COVERAGE "Code coverage tests")
 option(tidy "Run clang-tidy on the code")
 option(find "find NetCDF libraries" ON)
 
-
-option(${PROJECT_NAME}_BUILD_TESTING "Build tests" ${PROJECT_IS_TOP_LEVEL})
-option(CMAKE_TLS_VERIFY "Verify TLS certificates when downloading libraries" ON)
-
-
-if(nc4fortran_IS_TOP_LEVEL AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set_property(CACHE CMAKE_INSTALL_PREFIX PROPERTY VALUE "${PROJECT_BINARY_DIR}/local")
+if(CMAKE_VERSION VERSION_LESS 3.21)
+  get_property(not_top DIRECTORY PROPERTY PARENT_DIRECTORY)
+  if(not_top)
+    set(${PROJECT_NAME}_IS_TOP_LEVEL false)
+  else()
+    set(${PROJECT_NAME}_IS_TOP_LEVEL true)
+  endif()
 endif()
+
+
+option(${PROJECT_NAME}_BUILD_TESTING "Build tests" ${${PROJECT_NAME}_IS_TOP_LEVEL})
+option(CMAKE_TLS_VERIFY "Verify TLS certificates when downloading libraries" ON)
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 

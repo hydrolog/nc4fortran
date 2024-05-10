@@ -14,7 +14,10 @@ on:
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 4
-  CTEST_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_INSTALL_PREFIX: libs
+  CMAKE_PREFIX_PATH: libs
+
 
 jobs:
 
@@ -40,7 +43,9 @@ jobs:
     #   run: cmake --workflow --preset debug
 
     - name: config
-      run: cmake -G "MinGW Makefiles" -DHDF5_ROOT=${{ runner.temp }}/msys64/mingw64/ -DCMAKE_BUILD_TYPE=Release --preset default
+      run: cmake -G "MinGW Makefiles" --preset default
+      env:
+        HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
 
     - name: build
       run: cmake --build --preset default
@@ -53,7 +58,7 @@ jobs:
 # NetCDF-C packaging issue with HDF5--ignores CMAKE_MODULE_PATH and uses broken factory FindHDF5
 # and can't seem to override
     # - name: configure examples
-    #   run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+    #   run: cmake -S example -B example/build
     # - name: build Examples
     #   run: cmake --build example/build
     # - name: Test Examples
