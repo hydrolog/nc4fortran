@@ -91,3 +91,7 @@ fpm build
 fpm test
 fpm install
 ```
+
+## Acknowledgements
+
+nc4fortran was funded in part by NASA NNH19ZDA001N-HDEE grant 80NSSC20K0176.
