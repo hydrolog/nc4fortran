@@ -1,7 +1,7 @@
 # Object-oriented Fortran NetCDF4 interface
 
 [![DOI](https://zenodo.org/badge/229812591.svg)](https://zenodo.org/badge/latestdoi/229812591)
-![ci](https://github.com/geospace-code/nc4fortran/workflows/ci/badge.svg)
+[![ci](https://github.com/geospace-code/nc4fortran/actions/workflows/ci.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci.yml)
 [![ci_windows](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_windows.yml)
 [![ci_fpm](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml/badge.svg)](https://github.com/geospace-code/nc4fortran/actions/workflows/ci_fpm.yml)
 
@@ -91,3 +91,7 @@ fpm build
 fpm test
 fpm install
 ```
+
+## Acknowledgements
+
+nc4fortran was funded in part by NASA NNH19ZDA001N-HDEE grant 80NSSC20K0176.
