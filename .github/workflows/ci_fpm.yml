@@ -1,7 +1,7 @@
 name: ci_fpm
 
 on:
-  push:
+  workflow_dispatch:
     paths:
       - "fpm.toml"
       - ".github/workflows/ci_fpm.yml"
