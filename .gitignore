@@ -1,0 +1,8 @@
+build/*
+*.h5
+*.nc
+test/*.h5
+test/*.nc
+test/data/*.nc
+test/data/*.h5
+
