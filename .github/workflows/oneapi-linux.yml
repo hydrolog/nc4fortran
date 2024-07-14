@@ -11,7 +11,7 @@ env:
   CMAKE_PREFIX_PATH: ~/libs
 
 on:
-  push:
+  workflow_dispatch:
     paths:
       - "**.f90"
       - "**.F90"
