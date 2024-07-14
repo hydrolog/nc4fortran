@@ -2,6 +2,10 @@ name: ci
 
 env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
+  CMAKE_BUILD_PARALLEL_LEVEL: 4
+  CTEST_PARALLEL_LEVEL: 0
+  CMAKE_INSTALL_PREFIX: ~/libs
+  CMAKE_PREFIX_PATH: ~/libs
 
 on:
   push:
@@ -18,26 +22,31 @@ on:
 jobs:
 
   base:
-    runs-on: ${{ matrix.img.os }}
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+
+    env:
+      FC: gfortran-13
 
     strategy:
       matrix:
+        os: [ubuntu-latest, macos-latest]
         shared: [true, false]
-        img: [
-          {os: ubuntu-latest, cmd: sudo apt update && sudo apt install --no-install-recommends ninja-build libnetcdff-dev},
-        ]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: install system libs
-      run: ${{ matrix.img.cmd }}
+    - name: install NetCDF system libs
+      if: runner.os == 'Linux'
+      run: sudo apt install --no-install-recommends ninja-build libnetcdff-dev
+
+    - name: install NetCDF system libs
+      if: runner.os == 'macOS'
+      run: brew install ninja netcdf
 
     - run: >-
         cmake
         --preset multi
-        --install-prefix ${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
 
     - run: cmake --build --preset debug
@@ -53,48 +62,44 @@ jobs:
         cmake
         -S example
         -B example/build
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
         -DBUILD_SHARED_LIBS:BOOL=${{ matrix.shared }}
+
     - name: build examples
       run: cmake --build example/build
+
     - name: Test examples
       run: ctest --test-dir example/build -V
 
-
-  linux-build:
+  build:
     needs: base
-    runs-on: ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
 
+    env:
+      FC: gfortran-13
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: install libs
-      run: |
-        sudo apt update
-        sudo apt install --no-install-recommends libhdf5-dev
+    - name: install HDF5
+      if: runner.os == 'macOS'
+      run: brew install hdf5
 
-    - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build -DCMAKE_INSTALL_PREFIX=${{ runner.temp }}
+    - run: cmake --workflow --preset default
 
-    - name: Build/install NetCDF4
-      run: cmake --build scripts/build --parallel
-
-    - name: configure nc4fortran
-      run: >-
-        cmake
-        --preset default
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-
-    - run: cmake --build --preset default --parallel
-    - run: ctest --preset default
     - run: cmake --install build
 
     - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
+      run: cmake -S example -B example/build
+
     - name: build examples
-      run: cmake --build example/build --parallel
+      run: cmake --build example/build
+
     - name: Test examples
       run: ctest --test-dir example/build -V
 
@@ -106,8 +111,8 @@ jobs:
     timeout-minutes: 10
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -120,50 +125,12 @@ jobs:
       run: pip install gcovr
 
     - run: cmake --preset coverage
-    - run: cmake --build --preset coverage --parallel
+    - run: cmake --build --preset coverage
 
     - name: Code coverage
       run: cmake --build --preset run-coverage
 
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: coverage-report-html
         path: build-coverage/coverage/
-
-
-
-  mac:
-    runs-on: macos-latest
-    timeout-minutes: 30
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: install libs
-      run: |
-        brew install hdf5 netcdf
-        brew reinstall gcc
-
-    - name: Configure NetCDF4
-      run: cmake -S scripts -B scripts/build --install-prefix ${{ runner.temp }}
-
-    - name: Build/install NetCDF4
-      run: cmake --build scripts/build --parallel
-
-    - name: configure nc4fortran
-      run: >-
-        cmake
-        --preset default
-        --install-prefix ${{ runner.temp }}
-        -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-
-    - run: cmake --build --preset default
-    - run: ctest --preset default
-    - run: cmake --install build
-
-    - name: configure examples
-      run: cmake -S example -B example/build -DCMAKE_PREFIX_PATH=${{ runner.temp }}
-    - name: build examples
-      run: cmake --build example/build --parallel
-    - name: Test examples
-      run: ctest --test-dir example/build -V
