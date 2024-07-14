@@ -1,39 +1,38 @@
 module nc4fortran
 !! NetCDF4 object-oriented polymorphic interface
-# interfaces to netcdf-fortran 
-# netcdf4_f03  == abordagem de especificar somente interface explicita
-#                 e de preferencia para programas novos que usam as 
-#                 features do formato netcdf4.
-#                 Ver tambem a biblioteca python-netcdf para 
-#                 melhorar a documentacao.
-#
-#  A melhoria da documentacao da biblioteca tem o objetivo de aperfeiçoar 
-#  a biblioteca nc4fortran. Pode ser o ponto de partida para uma plataforma de desenvolvimento
-#  de algoritmos e modelos na forma de plugins para xarray. Usando accessors do xarray
-#  algoritmos paralelos em fortran e gravação transparente no backend netcdf4 do xarray.
-#  O uso das bibliotecas de base para uma api "generica" em fastapi (python) que 
-#  expanda o ecosistema tipo "pangeo" para os novos programadores F2023 usando o leverage do xarray.
-#  As bibliotecas em que usa como base:
-#   - numpy, pandas, python-netcdf, rasterio, rioxarray,   
-#
-#   +
-#   +--netcdf_nf_data
-#   +--netcdf_nf_interfaces
-#   +--netcdf4_nf_interfaces
-#   Ver netcdf_constants.f90
-#   Ver netcdf_visibility
+! interfaces to netcdf-fortran
+! netcdf4_f03  == abordagem de especificar somente interface explicita
+!                 e de preferencia para programas novos que usam as
+!                 features do formato netcdf4.
+!                 Ver tambem a biblioteca python-netcdf para
+!                 melhorar a documentacao.
+!
+!  A melhoria da documentacao da biblioteca tem o objetivo de aperfeiçoar
+!  a biblioteca nc4fortran. Pode ser o ponto de partida para uma plataforma de desenvolvimento
+!  de algoritmos e modelos na forma de plugins para xarray. Usando accessors do xarray
+!  algoritmos paralelos em fortran e gravação transparente no backend netcdf4 do xarray.
+!  O uso das bibliotecas de base para uma api "generica" em fastapi (python) que
+!  expanda o ecosistema tipo "pangeo" para os novos programadores F2023 usando o leverage do xarray.
+!  As bibliotecas em que usa como base:
+!   - numpy, pandas, python-netcdf, rasterio, rioxarray,
+!
+!   +
+!   +--netcdf_nf_data
+!   +--netcdf_nf_interfaces
+!   +--netcdf4_nf_interfaces
+!   Ver netcdf_constants.f90
+!   Ver netcdf_visibility
 
 use, intrinsic :: iso_fortran_env, only : real32, real64, int32, int64, stderr=>error_unit
 
 ! Library version, error string
 use netcdf, only : nf90_inq_libvers, nf90_strerror
-  
-! Control routines 
+! Control routines
 use netcdf, only : nf90_create, nf90_open, nf90_set_base_pe, nf90_inq_base_pe, &
                   nf90_set_fill, nf90_redef, nf90_enddef,                     &
                   nf90_create_mp, nf90_open_mp,                               &
                   nf90_sync, nf90_abort, nf90_close, nf90_delete
-          
+
 ! File level inquiry
 use netcdf, only : nf90_inquire, nf90_inq_path, nf90_inq_format
 
@@ -51,7 +50,7 @@ use netcdf, only : nf90_copy_att, nf90_rename_att, nf90_del_att, nf90_inq_attnam
 use netcdf, only : nf90_put_att, nf90_get_att
 
 ! Variable routines
-use netcdf, only : nf90_def_var, nf90_inq_varid, nf90_rename_var, nf90_inquire_variable 
+use netcdf, only : nf90_def_var, nf90_inq_varid, nf90_rename_var, nf90_inquire_variable
 ! overloaded functions
 use netcdf, only : nf90_put_var, nf90_get_var
 
@@ -338,7 +337,7 @@ end subroutine
 
 module subroutine nc_read_grp_attr(self, grpname, attrname, A, grpid)
 class(netcdf_file), intent(in) :: self
-character(*), intent(in) :: grpname, attrname  
+character(*), intent(in) :: grpname, attrname
 class(*), intent(inout) ::  A   !value of attribute to be read
 !! inout for character
 integer, intent(inout) :: grpid
