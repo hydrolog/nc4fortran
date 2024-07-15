@@ -18,9 +18,9 @@ on:
       - '**.cmake'
       - '**/CMakeLists.txt'
       - .github/workflows/oneapi-linux.yml
-      - !cmake/netcdf.cmake
-      - !cmake/netcdf-c.cmake
-      - !cmake/hdf5.cmake
+      - '!cmake/netcdf.cmake'
+      - '!cmake/netcdf-c.cmake'
+      - '!cmake/hdf5.cmake'
       - '!scripts/**'
 
 jobs:
