@@ -69,7 +69,7 @@ call h%close()
 
 call h%open(path, action='rw')
 call h%write_attribute('P', 'long_name', "pressure at maximum wind")
-call h%write_attribute('/', 'title', "NMC Global Product Set: Pressure at Maximun Wind", id_group)
+call h%write_attribute('/', 'title', "NMC Global Product Set: Pressure at Maximum Wind", id_group)
 call h%close()
 
 end subroutine test_write_attributes

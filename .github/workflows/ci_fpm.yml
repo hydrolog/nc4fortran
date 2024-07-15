@@ -3,8 +3,8 @@ name: ci_fpm
 on:
   workflow_dispatch:
     paths:
-      - "fpm.toml"
-      - ".github/workflows/ci_fpm.yml"
+      - fpm.toml
+      - .github/workflows/ci_fpm.yml
 
 
 jobs:

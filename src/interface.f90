@@ -36,7 +36,7 @@ use netcdf, only : nf90_create, nf90_open, nf90_set_base_pe, nf90_inq_base_pe, &
 ! File level inquiry
 use netcdf, only : nf90_inquire, nf90_inq_path, nf90_inq_format
 
-! Gropu level inquiry
+! Group level inquiry
 use netcdf, only : nf90_inq_ncid
 
 ! Dimension routines

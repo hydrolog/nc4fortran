@@ -3,14 +3,14 @@ name: ci_windows
 on:
   workflow_dispatch:
     paths:
-      - "**/CMakeLists.txt"
-      - "**.cmake"
-      - "**.f90"
-      - ".github/workflows/ci_windows.yml"
-      - "cmake/netcdf.cmake"
-      - "cmake/netcdf-c.cmake"
-      - "cmake/hdf5.cmake"
-      - "!scripts/**"
+      - '**/CMakeLists.txt'
+      - '**.cmake'
+      - '**.f90'
+      - .github/workflows/ci_windows.yml
+      - cmake/netcdf.cmake
+      - cmake/netcdf-c.cmake
+      - cmake/hdf5.cmake
+      - '!scripts/**'
 
 env:
   CMAKE_BUILD_PARALLEL_LEVEL: 4

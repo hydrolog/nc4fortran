@@ -13,15 +13,15 @@ env:
 on:
   workflow_dispatch:
     paths:
-      - "**.f90"
-      - "**.F90"
-      - "**.cmake"
-      - "**/CMakeLists.txt"
-      - ".github/workflows/oneapi-linux.yml"
-      - "!cmake/netcdf.cmake"
-      - "!cmake/netcdf-c.cmake"
-      - "!cmake/hdf5.cmake"
-      - "!scripts/**"
+      - '**.f90'
+      - '**.F90'
+      - '**.cmake'
+      - '**/CMakeLists.txt'
+      - .github/workflows/oneapi-linux.yml
+      - !cmake/netcdf.cmake
+      - !cmake/netcdf-c.cmake
+      - !cmake/hdf5.cmake
+      - '!scripts/**'
 
 jobs:
 

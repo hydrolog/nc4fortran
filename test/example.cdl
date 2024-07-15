@@ -26,7 +26,7 @@ variables:
 
 // global attributes:
 		:history = "created by Unidata LDM from NPS broadcast" ;
-		:title = "NMC Global Product Set: Pressure at Maximun Wind" ;
+		:title = "NMC Global Product Set: Pressure at Maximum Wind" ;
 data:
 
  P =
