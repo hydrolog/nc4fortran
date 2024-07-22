@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15...3.28)
+cmake_minimum_required(VERSION 3.22...3.30)
 
 project(nc4fortranExample
 LANGUAGES C Fortran
@@ -30,18 +30,16 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 get_property(test_names DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY TESTS)
 get_property(incdir TARGET nc4fortran::nc4fortran PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.22)
-  if(WIN32)
-    set_property(TEST ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${incdir}/../bin"
-    )
-  elseif(APPLE)
-    set_property(TEST ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${incdir}/../lib"
-    )
-  else()
-    set_property(TEST ${test_names} PROPERTY
-    ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${incdir}/../lib"
-    )
-  endif()
+if(WIN32)
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${incdir}/../bin"
+  )
+elseif(APPLE)
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "DYLD_LIBRARY_PATH=path_list_prepend:${incdir}/../lib"
+  )
+else()
+  set_property(TEST ${test_names} PROPERTY
+  ENVIRONMENT_MODIFICATION "LD_LIBRARY_PATH=path_list_prepend:${incdir}/../lib"
+  )
 endif()
