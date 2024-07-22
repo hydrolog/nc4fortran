@@ -12,7 +12,7 @@ endif()
 
 project(nc4fortran
 LANGUAGES C Fortran
-VERSION 1.7.1
+VERSION 1.7.2
 )
 
 enable_testing()
