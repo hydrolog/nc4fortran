@@ -87,9 +87,18 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: install HDF5
+    - name: install HDF5 (macOS)
       if: runner.os == 'macOS'
       run: brew install hdf5
+
+    - name: install HDF5 (Linux)
+      if: runner.os == 'Linux'
+      run: sudo apt install --no-install-recommends libhdf5-dev
+
+    - name: GCC Linux
+      if: runner.os == 'Linux'
+      run: |
+        echo "CC=gcc-14" >> $GITHUB_ENV
 
     - run: cmake --workflow --preset default
 
