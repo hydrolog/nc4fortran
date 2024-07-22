@@ -50,6 +50,7 @@ jobs:
       run: cmake -G "MinGW Makefiles" --preset default
       env:
         HDF5_ROOT: ${{ runner.temp }}/msys64/mingw64/
+        NetCDF_ROOT: ${{ runner.temp }}/msys64/mingw64/
 
     - name: build
       run: cmake --build --preset default
