@@ -7,7 +7,7 @@ module nc4fortran
 !                 Ver tambem a biblioteca python-netcdf para
 !                 melhorar a documentacao.
 !
-!  A melhoria da documentacao da biblioteca tem o objetivo de aperfeiçoar
+!  A melhoria da documentacao da biblioteca tem o objetivo de aperfeicoar
 !  a biblioteca nc4fortran. Pode ser o ponto de partida para uma plataforma de desenvolvimento
 !  de algoritmos e modelos na forma de plugins para xarray. Usando accessors do xarray
 !  algoritmos paralelos em fortran e gravação transparente no backend netcdf4 do xarray.
