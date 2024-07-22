@@ -4,6 +4,7 @@ env:
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   CMAKE_BUILD_PARALLEL_LEVEL: 4
   CTEST_PARALLEL_LEVEL: 0
+  CTEST_NO_TESTS_ACTION: error
   CMAKE_INSTALL_PREFIX: ~/libs
   CMAKE_PREFIX_PATH: ~/libs
 
@@ -26,11 +27,11 @@ jobs:
     timeout-minutes: 15
 
     env:
-      FC: gfortran-13
+      FC: gfortran-14
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-24.04, macos-latest]
         shared: [true, false]
 
     steps:
@@ -42,7 +43,7 @@ jobs:
 
     - name: install NetCDF system libs
       if: runner.os == 'macOS'
-      run: brew install ninja netcdf
+      run: brew install ninja netcdf-fortran
 
     - run: >-
         cmake
@@ -77,11 +78,11 @@ jobs:
     timeout-minutes: 15
 
     env:
-      FC: gfortran-13
+      FC: gfortran-14
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-24.04, macos-latest]
 
     steps:
     - uses: actions/checkout@v4
