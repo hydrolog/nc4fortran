@@ -5,7 +5,6 @@ option(tidy "Run clang-tidy on the code")
 option(find "find NetCDF libraries" ON)
 
 option(nc4fortran_BUILD_TESTING "Build tests" ${nc4fortran_IS_TOP_LEVEL})
-option(CMAKE_TLS_VERIFY "Verify TLS certificates when downloading libraries" ON)
 
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 

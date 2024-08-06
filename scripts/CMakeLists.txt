@@ -11,8 +11,6 @@ endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 
-set(CMAKE_TLS_VERIFY on)
-
 # --- commence NetCDF build/install
 set_property(DIRECTORY PROPERTY EP_UPDATE_DISCONNECTED true)
 
