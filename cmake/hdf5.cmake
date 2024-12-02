@@ -18,7 +18,7 @@ foreach(_name IN ITEMS hdf5_hl_fortran hdf5_hl_f90cstub hdf5_fortran hdf5_f90cst
   # need ${CMAKE_INSTALL_PREFIX}/lib as HDF5 doesn't use GNUInstallDirs
   if(BUILD_SHARED_LIBS)
     if(WIN32)
-      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
+      list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_FULL_BINDIR}/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     else()
       list(APPEND HDF5_LIBRARIES ${CMAKE_INSTALL_PREFIX}/lib/lib${_name}${CMAKE_SHARED_LIBRARY_SUFFIX})
     endif()
@@ -57,12 +57,10 @@ set(hdf5_cmake_args
 -DHDF5_BUILD_CPP_LIB:BOOL=false
 -DBUILD_TESTING:BOOL=false
 -DHDF5_BUILD_EXAMPLES:BOOL=false
--DHDF5_BUILD_TOOLS:BOOL=$<NOT:$<BOOL:${hdf5_parallel}>>
+-DHDF5_BUILD_TOOLS:BOOL=true
 -DHDF5_ENABLE_PARALLEL:BOOL=$<BOOL:${hdf5_parallel}>
--DHDF5_BUILD_PARALLEL_TOOLS:BOOL=false
+-DHDF5_BUILD_PARALLEL_TOOLS:BOOL=$<BOOL:${hdf5_parallel}>
 )
-# https://github.com/HDFGroup/hdf5/issues/818  for broken ph5diff in HDF5_BUILD_TOOLS
-# avoid building tools as some HDF5 versions have build failures or broken tools
 
 #-DHDF5_USE_GNU_DIRS:BOOL=ON  # not yet, new for 1.14
 
@@ -70,7 +68,16 @@ if(MPI_ROOT)
   list(APPEND hdf5_cmake_args -DMPI_ROOT:PATH=${MPI_ROOT})
 endif()
 
-string(JSON hdf5_url GET ${json} hdf5 url)
+if(NOT hdf5_url)
+  string(JSON hdf5_url GET ${json} hdf5 url)
+endif()
+
+# Get HDF5 version from underscore-separated version in URL
+
+string(REGEX MATCH "[0-9]+_[0-9]+_[0-9]+" HDF5_VERSION "${hdf5_url}")
+string(REPLACE "_" "." HDF5_VERSION "${HDF5_VERSION}")
+
+message(STATUS "Building HDF5 ${HDF5_VERSION}")
 
 ExternalProject_Add(HDF5
 URL ${hdf5_url}
