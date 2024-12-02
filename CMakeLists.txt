@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19...3.29)
+cmake_minimum_required(VERSION 3.19...3.30)
 
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
   message(FATAL_ERROR "In-source builds are not allowed. Do like:
@@ -12,7 +12,7 @@ endif()
 
 project(nc4fortran
 LANGUAGES C Fortran
-VERSION 1.7.1
+VERSION 1.7.2
 )
 
 enable_testing()
@@ -27,19 +27,19 @@ file(GENERATE OUTPUT .gitignore CONTENT "*")
 if(find)
   find_package(NetCDF COMPONENTS C Fortran)
 endif()
-if(NOT NetCDF_FOUND)
+if(NOT NetCDF_FOUND AND NOT TARGET NetCDF::NetCDF_Fortran)
   include(cmake/netcdf.cmake)
 endif()
 
 # --- code coverage
-if(${PROJECT_NAME}_COVERAGE AND ${PROJECT_NAME}_IS_TOP_LEVEL)
+if(nc4fortran_COVERAGE AND nc4fortran_IS_TOP_LEVEL)
   include(cmake/Modules/CodeCoverage.cmake)
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES ${PROJECT_SOURCE_DIR}/test)
 endif()
 
 # --- clang-tidy
-if(tidy AND ${PROJECT_NAME}_IS_TOP_LEVEL)
+if(tidy AND nc4fortran_IS_TOP_LEVEL)
   find_program(CLANG_TIDY_EXE NAMES "clang-tidy" REQUIRED)
   set(CMAKE_C_CLANG_TIDY ${CLANG_TIDY_EXE})
 endif()
@@ -66,7 +66,7 @@ target_link_libraries(nc4fortran::nc4fortran INTERFACE nc4fortran)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/nc4fortran.mod TYPE INCLUDE)
 
-install(TARGETS nc4fortran EXPORT ${PROJECT_NAME}-targets)
+install(TARGETS nc4fortran EXPORT nc4fortran-targets)
 
 # additional Find*.cmake necessary
 install(FILES
@@ -76,7 +76,7 @@ DESTINATION cmake
 )
 
 
-if(${PROJECT_NAME}_BUILD_TESTING)
+if(nc4fortran_BUILD_TESTING)
   add_subdirectory(test)
 endif()
 
