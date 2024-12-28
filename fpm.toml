@@ -24,6 +24,10 @@ name = "attributes"
 main = "test_attributes.f90"
 
 [[test]]
+name = "attributes"
+main = "test_attributes2.f90"
+
+[[test]]
 name = "deflate_write"
 main = "test_deflate_write.f90"
 
