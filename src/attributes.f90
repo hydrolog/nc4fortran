@@ -6,7 +6,6 @@ contains
 
 module procedure nc_write_var_attr
   integer :: varid, ier
-
   ier = nf90_inq_varid(self%file_id, dname, varid)
   print *, "Attribute varid = ", varid
 
@@ -14,11 +13,11 @@ module procedure nc_write_var_attr
     select type(A)
     type is (character(*))
       ier = nf90_put_att(self%file_id, varid, attrname, A)
-    type is (real(real32))
+    type is (real(real32) or real(real32(:)))
       ier = nf90_put_att(self%file_id, varid, attrname, A)
-    type is (real(real64))
+    type is (real(real64) or real(real64(:)))
       ier = nf90_put_att(self%file_id, varid, attrname, A)
-    type is (integer(int32))
+    type is (integer(int32) or integer(int32)))
       ier = nf90_put_att(self%file_id, varid, attrname, A)
     class default
       ier = NF90_EBADTYPE
@@ -29,9 +28,9 @@ module procedure nc_write_var_attr
 end procedure nc_write_var_attr
 
 module procedure nc_write_grp_attr
-  integer :: ier, grpid_, len_, xtype_, len_, attnum_
+  integer :: ier, grpid_, len_, xtype_, len_, attnum_, A1.
   character(len=255) ::  grpname_, attname_
-
+  A1=A(1)
   grpname_ = trim(grpname)
   attname_ = trim(attrname)
   grpid_ = NF90_GLOBAL
@@ -47,11 +46,11 @@ module procedure nc_write_grp_attr
     select type(A)
     type is (character(*))
       ier = nf90_put_att(self%file_id, grpid_, attname_, A)
-    type is (real(real32))
+    type is (real(real32) or real(real32(:)))
       ier = nf90_put_att(self%file_id, grpid_, attname_, A)
-    type is (real(real64))
+    type is (real(real64) or real(real64(:)))
       ier = nf90_put_att(self%file_id, grpid_, attname_, A)
-    type is (integer(int32))
+    type is (integer(int32) or integer(int32)))
       ier = nf90_put_att(self%file_id, grpid_, attname_, A)
     class default
       ier = NF90_EBADTYPE
@@ -71,11 +70,11 @@ module procedure nc_read_var_attr
     select type (A)
     type is (character(*))
       ier = nf90_get_att(self%file_id, varid, attrname, A)
-    type is (real(real32))
+    type is (real(real32) or real(real32(:)))
       ier = nf90_get_att(self%file_id, varid, attrname, A)
-    type is (real(real64))
+    type is (real(real64) or real(real64(:)))
       ier = nf90_get_att(self%file_id, varid, attrname, A)
-    type is (integer(int32))
+    type is (integer(int32) or integer(int32(:)))
       ier = nf90_get_att(self%file_id, varid, attrname, A)
     class default
       ier = NF90_EBADTYPE
@@ -105,11 +104,11 @@ module procedure nc_read_grp_attr
     select type(A)
     type is (character(*))
       ier = nf90_get_att(self%file_id, grpid_, attname_, A)
-    type is (real(real32))
+    type is (real(real32) or real(real64(:)))
       ier = nf90_get_att(self%file_id, grpid_, attname_, A)
-    type is (real(real64))
+    type is (real(real64) or real(real32(:)))
       ier = nf90_get_att(self%file_id, grpid_, attname_, A)
-    type is (integer(int32))
+    type is (integer(int32) integer(int32(:)))
       ier = nf90_get_att(self%file_id, grpid_, attname_, A)
     class default
       ier = NF90_EBADTYPE
