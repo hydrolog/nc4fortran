@@ -296,27 +296,27 @@ interface !< attributes.f90
 module subroutine nc_write_var_attr(self, dname, attrname, A)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
-class(*), intent(in) :: A
+class(*), intent(in) :: A(:)
 end subroutine
 
 module subroutine nc_read_var_attr(self, dname, attrname, A)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: dname, attrname
-class(*), intent(inout) ::  A
+class(*), intent(inout) ::  A(:)
 !! inout for character
 end subroutine
 
 module subroutine nc_write_grp_attr(self, grpname, attrname, A, grpid)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: grpname, attrname
-class(*), intent(in) :: A  !value of attribute to be written
+class(*), intent(in) :: A(:)  !value of attribute to be written
 integer, intent(in) :: grpid
 end subroutine
 
 module subroutine nc_read_grp_attr(self, grpname, attrname, A, grpid)
 class(netcdf_file), intent(in) :: self
 character(*), intent(in) :: grpname, attrname
-class(*), intent(inout) ::  A   !value of attribute to be read
+class(*), intent(inout) ::  A(:)   !value of attribute to be read
 !! inout for character
 integer, intent(inout) :: grpid
 end subroutine
